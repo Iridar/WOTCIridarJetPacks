@@ -1,3 +1,7 @@
 [submodule "robojumperSquadSelect"]
 	path = robojumperSquadSelect
 	url = https://github.com/robojumper/robojumperSquadSelect.git
+[submodule "X2WOTCCommunityHighlander"]
+	path = X2WOTCCommunityHighlander
+	url = https://github.com/Iridar/X2WOTCCommunityHighlander.git
+	branch = jet-packs

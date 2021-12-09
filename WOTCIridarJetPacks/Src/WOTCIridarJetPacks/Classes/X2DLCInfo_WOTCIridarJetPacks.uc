@@ -1,5 +1,12 @@
 class X2DLCInfo_WOTCIridarJetPacks extends X2DownloadableContentInfo;
 
+var config int PanelY;
+
+exec function SetPanelY(int X)
+{
+	default.PanelY = X;
+}
+
 
 /// <summary>
 /// This method is run if the player loads a saved game that was created prior to this DLC / Mod being installed, and allows the 

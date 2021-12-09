@@ -7,14 +7,13 @@
     <SteamPublishID>0</SteamPublishID>
     <AssemblyName>WOTCIridarJetPacks</AssemblyName>
     <RootNamespace>WOTCIridarJetPacks</RootNamespace>
+    <ProjectGuid>{a3ee7b05-9f4c-4cb1-b76c-86cf8e5a21ca}</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Config\" />
     <Folder Include="Localization\" />
     <Folder Include="Content\" />
     <Folder Include="Src\" />
-    <Folder Include="Src\LW_Tuple" />
-    <Folder Include="Src\LW_Tuple\Classes" />
     <Folder Include="Src\WOTCIridarJetPacks\" />
     <Folder Include="Src\WOTCIridarJetPacks\Classes\" />
   </ItemGroup>
@@ -28,19 +27,15 @@
     <Content Include="Src\extra_globals.uci">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\LW_Tuple\Classes\LWTuple.uc">
-      <SubType>Content</SubType>
-    </Content>
     <Content Include="Src\WOTCIridarJetPacks\Classes\X2DLCInfo_WOTCIridarJetPacks.uc" />
     <Content Include="Src\WOTCIridarJetPacks\Classes\X2EventListener_JetPacks.uc">
       <SubType>Content</SubType>
     </Content>
   </ItemGroup>
-    <PropertyGroup>
+  <PropertyGroup>
     <SolutionRoot>$(MSBuildProjectDirectory)\..\</SolutionRoot>
     <ScriptsDir>$(SolutionRoot).scripts\</ScriptsDir>
     <BuildCommonRoot>$(ScriptsDir)X2ModBuildCommon\</BuildCommonRoot>
   </PropertyGroup>
   <Import Project="$(BuildCommonRoot)XCOM2.targets" />
-
 </Project>

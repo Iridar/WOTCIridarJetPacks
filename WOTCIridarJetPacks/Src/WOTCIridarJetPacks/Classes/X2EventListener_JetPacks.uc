@@ -43,9 +43,7 @@ static function EventListenerReturn OnSquadSelectNavHelpUpdate(Object EventData,
 	local XComGameState_Unit				UnitState;
 	local XComGameState_HeadquartersXCom	XComHQ;
 	local XComGameStateHistory				History;
-	local UIMechaListItem					SpawnedItem;
-	local int								PanelY;
-	local  robojumper_UISquadSelect_ListItem RJS;
+	local UIMechaListItem					DDCheckbox;
 
 	SquadSelect = UISquadSelect(EventSource);
 	if (SquadSelect == none)
@@ -58,6 +56,8 @@ static function EventListenerReturn OnSquadSelectNavHelpUpdate(Object EventData,
 
 	SquadSelect.GetChildrenOfType(class'UISquadSelect_ListItem', ChildrenPanels);
 
+	`AMLOG("Running");
+
 	foreach ChildrenPanels(ChildPanel)
 	{
 		ListItem = UISquadSelect_ListItem(ChildPanel);
@@ -68,24 +68,28 @@ static function EventListenerReturn OnSquadSelectNavHelpUpdate(Object EventData,
 		if (UnitState == none)
 			continue;
 
-		if (ListItem.GetChildByName('Iri_JetPacks_DynamicDeployment_Checkbox') != none)
+		`AMLOG("Looking at soldier:" @ UnitState.GetFullName());
+
+		if (ListItem.GetChildByName('Iri_JetPacks_DynamicDeployment_Checkbox') != none || ListItem.bDisabled)
 			continue;
 
-		PanelY = ListItem.Height;
+		DDCheckbox = ListItem.Spawn(class'UIMechaListItem', ListItem);
+		DDCheckbox.bAnimateOnInit = false;
+		DDCheckbox.InitListItem('Iri_JetPacks_DynamicDeployment_Checkbox');
+		DDCheckbox.UpdateDataCheckbox("Dynamic Deployment", "tooltip", false, OnDynamicDeploymentCheckboxChanged, none);
+		DDCheckbox.SetWidth(465);
+
 		if (ListItem.IsA('robojumper_UISquadSelect_ListItem'))
 		{
-			//PanelY += robojumper_UISquadSelect_ListItem(ListItem).GetExtraHeight();
+			DDCheckbox.SetY(ListItem.Height + robojumper_UISquadSelect_ListItem(ListItem).GetExtraHeight());
+			ListItem.SetY(ListItem.Y - DDCheckbox.Height - 10);
 		}
-
-		`AMLOG("Looking at soldier:" @ UnitState.GetFullName());
-		SpawnedItem = ListItem.Spawn(class'UIMechaListItem', ListItem);
-		SpawnedItem.bAnimateOnInit = false;
-		SpawnedItem.InitListItem('Iri_JetPacks_DynamicDeployment_Checkbox');
-		SpawnedItem.UpdateDataCheckbox("Dynamic Deployment", "tooltip", false, OnDynamicDeploymentCheckboxChanged, none);
-		SpawnedItem.SetY(PanelY);
-		SpawnedItem.SetWidth(460);
-		
-		ListItem.SetY(ListItem.Y +  - SpawnedItem.Height - 10);
+		else
+		{
+			`AMLOG("Regular panel. Y:" @ ListItem.Y @ "Height:" @ ListItem.Height);
+			DDCheckbox.SetY(362);
+			ListItem.SetY(ListItem.Y - DDCheckbox.Height);
+		}
 	}
 	return ELR_NoInterrupt;
 }

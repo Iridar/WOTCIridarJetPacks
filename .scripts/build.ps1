@@ -12,7 +12,8 @@ Write-Host "Sourcing $common"
 
 $builder = [BuildProject]::new("WOTCIridarJetPacks", $srcDirectory, $sdkPath, $gamePath)
 
-$builder.IncludeSrc("$srcDirectory\robojumperSquadSelect\robojumperSquadSelect\Src")
+#$builder.IncludeSrc("$srcDirectory\X2WOTCCommunityHighlander\X2WOTCCommunityHighlander\Src")
+# $builder.IncludeSrc("$srcDirectory\robojumperSquadSelect\robojumperSquadSelect\Src")
 
 
 switch ($config)
