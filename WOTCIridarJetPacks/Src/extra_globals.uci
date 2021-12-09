@@ -1,0 +1,1 @@
+`define AMLOG(msg) `LOG(GetFuncName() @ `msg,, 'JetPacks')
