@@ -44,6 +44,8 @@ static function EventListenerReturn OnSquadSelectNavHelpUpdate(Object EventData,
 	local XComGameState_HeadquartersXCom	XComHQ;
 	local XComGameStateHistory				History;
 	local UIMechaListItem					SpawnedItem;
+	local int								PanelY;
+	local  robojumper_UISquadSelect_ListItem RJS;
 
 	SquadSelect = UISquadSelect(EventSource);
 	if (SquadSelect == none)
@@ -69,14 +71,21 @@ static function EventListenerReturn OnSquadSelectNavHelpUpdate(Object EventData,
 		if (ListItem.GetChildByName('Iri_JetPacks_DynamicDeployment_Checkbox') != none)
 			continue;
 
+		PanelY = ListItem.Height;
+		if (ListItem.IsA('robojumper_UISquadSelect_ListItem'))
+		{
+			//PanelY += robojumper_UISquadSelect_ListItem(ListItem).GetExtraHeight();
+		}
+
 		`AMLOG("Looking at soldier:" @ UnitState.GetFullName());
 		SpawnedItem = ListItem.Spawn(class'UIMechaListItem', ListItem);
 		SpawnedItem.bAnimateOnInit = false;
 		SpawnedItem.InitListItem('Iri_JetPacks_DynamicDeployment_Checkbox');
 		SpawnedItem.UpdateDataCheckbox("Dynamic Deployment", "tooltip", false, OnDynamicDeploymentCheckboxChanged, none);
-		SpawnedItem.SetY(ListItem.Height);
+		SpawnedItem.SetY(PanelY);
 		SpawnedItem.SetWidth(460);
-		ListItem.SetY(ListItem.Y + ListItem.GetExtraHeight() - SpawnedItem.Height - 10);
+		
+		ListItem.SetY(ListItem.Y +  - SpawnedItem.Height - 10);
 	}
 	return ELR_NoInterrupt;
 }

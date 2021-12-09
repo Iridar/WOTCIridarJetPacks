@@ -1,0 +1,3 @@
+[submodule "robojumperSquadSelect"]
+	path = robojumperSquadSelect
+	url = https://github.com/robojumper/robojumperSquadSelect.git
