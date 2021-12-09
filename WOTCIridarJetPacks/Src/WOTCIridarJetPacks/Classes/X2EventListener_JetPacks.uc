@@ -36,36 +36,52 @@ static function CHEventListenerTemplate SquadSelectListener()
 
 static function EventListenerReturn OnSquadSelectNavHelpUpdate(Object EventData, Object EventSource, XComGameState GameState, Name EventID, Object CallbackObject)
 {
-	local UISquadSelect				SquadSelect;
-	local UISquadSelect_ListItem	ListItem;
-	local int						SlotIndex;
-	local int						SquadIndex;
-	
-	`AMLOG("Running");
+	local UISquadSelect						SquadSelect;
+	local UISquadSelect_ListItem			ListItem;
+	local array<UIPanel>					ChildrenPanels;
+	local UIPanel							ChildPanel;
+	local XComGameState_Unit				UnitState;
+	local XComGameState_HeadquartersXCom	XComHQ;
+	local XComGameStateHistory				History;
+	local UIMechaListItem					SpawnedItem;
 
 	SquadSelect = UISquadSelect(EventSource);
 	if (SquadSelect == none)
 		return ELR_NoInterrupt;
 
-	`AMLOG("Have squad select screen. Slots:" @ SquadSelect.SlotListOrder.Length);
+	History = `XCOMHISTORY;
+	XComHQ = XComGameState_HeadquartersXCom(History.GetSingleGameStateObjectForClass(class'XComGameState_HeadquartersXCom', true));
+	if (XComHQ == none)
+		return ELR_NoInterrupt;
 
-	for (SlotIndex = 0; SlotIndex < SquadSelect.SlotListOrder.Length; SlotIndex++)
+	SquadSelect.GetChildrenOfType(class'UISquadSelect_ListItem', ChildrenPanels);
+
+	foreach ChildrenPanels(ChildPanel)
 	{
-		SquadIndex = SquadSelect.SlotListOrder[SlotIndex];
-
-		// The slot list may contain more information/slots than available soldiers, so skip if we're reading outside the current soldier availability. 
-		if (SquadIndex >= SquadSelect.SoldierSlotCount)
+		ListItem = UISquadSelect_ListItem(ChildPanel);
+		if (ListItem.SlotIndex < 0 || ListItem.SlotIndex > XComHQ.Squad.Length || XComHQ.Squad[ListItem.SlotIndex].ObjectID == 0)
 			continue;
 
-		//We want the slots to match the visual order of the pawns in the slot list. 
-		ListItem = UISquadSelect_ListItem(SquadSelect.m_kSlotList.GetItem(SlotIndex));
+		UnitState = XComGameState_Unit(History.GetGameStateForObjectID(XComHQ.Squad[ListItem.SlotIndex].ObjectID));
+		if (UnitState == none)
+			continue;
 
-		if (ListItem != none)
-		{
-			`LOG("Looking at soldier:" @ XComGameState_Unit(`XCOMHISTORY.GetGameStateForObjectID(`XCOMHQ.Squad[ListItem.SlotIndex].ObjectID)).GetFullName(),, 'IRITEST');
-			
-		}
+		if (ListItem.GetChildByName('Iri_JetPacks_DynamicDeployment_Checkbox') != none)
+			continue;
+
+		`AMLOG("Looking at soldier:" @ UnitState.GetFullName());
+		SpawnedItem = ListItem.Spawn(class'UIMechaListItem', ListItem);
+		SpawnedItem.bAnimateOnInit = false;
+		SpawnedItem.InitListItem('Iri_JetPacks_DynamicDeployment_Checkbox');
+		SpawnedItem.UpdateDataCheckbox("Dynamic Deployment", "tooltip", false, OnDynamicDeploymentCheckboxChanged, none);
+		SpawnedItem.SetY(ListItem.Height);
+		SpawnedItem.SetWidth(460);
+		ListItem.SetY(ListItem.Y + ListItem.GetExtraHeight() - SpawnedItem.Height - 10);
 	}
-
 	return ELR_NoInterrupt;
+}
+
+private static function OnDynamicDeploymentCheckboxChanged(UICheckbox CheckBox)
+{
+	
 }
